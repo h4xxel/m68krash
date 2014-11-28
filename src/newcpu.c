@@ -259,31 +259,11 @@ void build_cpufunctbl (void)
 	unsigned long opcode;
 	const struct cputbl *tbl = 0;
 	int lvl;
-
+	
+	printf("ARNE %i\n", currprefs.cpu_model);
+	
 	switch (currprefs.cpu_model)
 	{
-#ifdef CPUEMU_0
-#ifndef CPUEMU_68000_ONLY
-	case 68060:
-		lvl = 5;
-//		tbl = op_smalltbl_0_ff;
-//		if (!currprefs.cachesize) {
-//			if (currprefs.cpu_cycle_exact)
-//				tbl = op_smalltbl_22_ff;
-//			if (currprefs.mmu_model)
-				//tbl = op_smalltbl_33_ff;
-//		}
-		break;
-	case 68040:
-		lvl = 4;
-//		tbl = op_smalltbl_1_ff;
-//		if (!currprefs.cachesize) {
-//			if (currprefs.cpu_cycle_exact)
-//				tbl = op_smalltbl_23_ff;
-//			if (currprefs.mmu_model)
-				tbl = op_smalltbl_31_ff;
-//		}
-		break;
 	case 68030:
 		lvl = 3;
 //		tbl = op_smalltbl_2_ff;
@@ -294,8 +274,6 @@ void build_cpufunctbl (void)
 				tbl = op_smalltbl_32_ff;
 //		}
 		break;
-#endif
-#endif
 	default:
 		changed_prefs.cpu_model = currprefs.cpu_model = 68000;
 	}
@@ -393,14 +371,14 @@ static void update_68k_cycles (void)
 
 static void prefs_changed_cpu (void)
 {
-	fixup_cpu (&changed_prefs);
+	/*fixup_cpu (&changed_prefs);
 	currprefs.cpu_model = changed_prefs.cpu_model;
 	currprefs.fpu_model = changed_prefs.fpu_model;
     currprefs.fpu_revision = changed_prefs.fpu_revision;
 	currprefs.mmu_model = changed_prefs.mmu_model;
 	currprefs.cpu_compatible = changed_prefs.cpu_compatible;
 	currprefs.cpu_cycle_exact = changed_prefs.cpu_cycle_exact;
-	currprefs.blitter_cycle_exact = changed_prefs.cpu_cycle_exact;
+	currprefs.blitter_cycle_exact = changed_prefs.cpu_cycle_exact;*/
 }
 
 void check_prefs_changed_cpu (void)
