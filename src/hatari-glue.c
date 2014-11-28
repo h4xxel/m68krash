@@ -28,6 +28,17 @@ struct uae_prefs currprefs, changed_prefs;
 
 int pendingInterrupts = 0;
 
+uae_u32 get_longi(uaecptr addr) {
+	printf("ACHTUNG!\n");
+	exit(1);
+	return 0x4E71;
+}
+uae_u32 get_wordi(uaecptr addr) {
+	printf("ACHTUNG!\n");
+	exit(1);
+	return 0x4E71;
+}
+
 
 /**
  * Reset custom chips

@@ -258,6 +258,10 @@ static inline void M68000_AddCyclesWithPairing(int cycles)
 }
 
 
+#define m68030_init M68000_Init
+#define m68030_reset M68000_Reset
+#define m68030_start M68000_Start
+
 extern void M68000_Init(void);
 extern void M68000_Reset(bool bCold);
 extern void M68000_Stop(void);
