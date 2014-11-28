@@ -1,4 +1,5 @@
 *.o
+*.a
 src/cpuemu_31.c
 src/cpuemu_32.c
 src/cpustbl.c
