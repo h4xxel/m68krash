@@ -22,10 +22,10 @@ OBJ = main.o \
 .PHONY: all clean generated deps
 
 all: generated deps
-	@$(CC) $(CFLAGS) -o m86krash $(OBJ) $(TABLE68K) $(CPUEMU) $(LDFLAGS)
+	@$(CC) $(CFLAGS) -o m68krash $(OBJ) $(TABLE68K) $(CPUEMU) $(LDFLAGS)
 
 clean:
-	rm -f $(OBJ) $(BUILD68K) $(GENCPU) $(TABLE68K) table68k.c build68k gencpu cpuemu_31.c cpuemu_32.c cpustbl.c cpustbl.h
+	rm -f $(OBJ) $(BUILD68K) $(GENCPU) $(TABLE68K) $(CPUEMU) table68k.c build68k gencpu cpuemu_31.c cpuemu_32.c cpustbl.c cpustbl.h
 
 deps: $(CPUEMU) $(TABLE68K) $(OBJ)
 
@@ -49,11 +49,11 @@ cpuemu_31.o: generated
 	@echo " [ CC ]	$*.c"
 	@$(CC) $(CFLAGS) -c -o $@ $*.c
 
-cpuemu_31.o: generated
+cpuemu_32.o: generated
 	@echo " [ CC ]	$*.c"
 	@$(CC) $(CFLAGS) -c -o $@ $*.c
 
-cpuemu_31.o: generated
+cpustbl.o:  generated
 	@echo " [ CC ]	$*.c"
 	@$(CC) $(CFLAGS) -c -o $@ $*.c
 	
