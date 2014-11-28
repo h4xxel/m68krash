@@ -8,8 +8,7 @@ CPUEMU = cpuemu_31.o \
 	cpuemu_32.o \
 	cpustbl.o
 
-OBJ = main.o \
-	cpuemu_common.o \
+OBJ = cpuemu_common.o \
 	cpummu030.o \
 	cpummu.o \
 	fpp.o \
