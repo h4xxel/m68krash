@@ -1,4 +1,4 @@
-CFLAGS += -Wall -g -O0 -std=c99
+CFLAGS += -w -g -O0 -std=c99
 LDFLAGS += -lm
 
 GENCPU = gencpu.o
