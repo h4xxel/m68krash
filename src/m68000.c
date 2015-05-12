@@ -348,17 +348,18 @@ void M68000_MemorySnapShot_Capture(bool bSave)
 		restore_fpu(chunk);
 }
 
-
+#endif
 /*-----------------------------------------------------------------------*/
 /**
  * BUSERROR - Access outside valid memory range.
  * Use bRead = 0 for write errors and bRead = 1 for read errors!
  */
-void M68000_BusError(Uint32 addr, bool bRead)
+void M68000_BusError(uint32_t addr, bool bRead)
 {
 	exception2 (addr, bRead, 0, regs.s ? 5 : 1); /* assumes data access,
                                                   size not set */
 }
+#if 0
 #if 0
 void M68000_BusError(Uint32 addr, bool bRead)
 {
