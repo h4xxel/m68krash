@@ -22,6 +22,7 @@ const char HatariGlue_fileid[] = "Hatari hatari-glue.c : " __DATE__ " " __TIME__
 #include "memory.h"
 #include "newcpu.h"
 #include "hatari-glue.h"
+#include "m68000.h"
 
 
 struct uae_prefs currprefs, changed_prefs;
@@ -72,19 +73,39 @@ int intlev(void)
 /**
  * Initialize 680x0 emulation
  */
-int Init680x0(void)
+int Init680x0(M68kCpu cpu)
 {
-	currprefs.cpu_level = changed_prefs.cpu_level = 3;
-	currprefs.cpu_model = 68030;
-	
-	currprefs.fpu_model = changed_prefs.fpu_model = 68882;
-	currprefs.fpu_revision = 0x20;
-	
-	currprefs.cpu_compatible = changed_prefs.cpu_compatible = 0;
-	currprefs.address_space_24 = changed_prefs.address_space_24 = 0;
-	currprefs.cpu_cycle_exact = changed_prefs.cpu_cycle_exact = 0;
-	currprefs.fpu_strict = changed_prefs.fpu_strict = 0;
-	currprefs.mmu_model = changed_prefs.mmu_model = 68030;
+	switch(cpu) {
+		case M68K_CPU_030:
+			currprefs.cpu_level = changed_prefs.cpu_level = 3;
+			currprefs.cpu_model = 68030;
+			
+			currprefs.fpu_model = changed_prefs.fpu_model = FPU_68882;
+			currprefs.fpu_revision = 0x20;
+			
+			currprefs.cpu_compatible = changed_prefs.cpu_compatible = 0;
+			currprefs.address_space_24 = changed_prefs.address_space_24 = 0;
+			currprefs.cpu_cycle_exact = changed_prefs.cpu_cycle_exact = 0;
+			currprefs.fpu_strict = changed_prefs.fpu_strict = 0;
+			currprefs.mmu_model = changed_prefs.mmu_model = 68030;
+			break;
+		case M68K_CPU_040:
+			currprefs.cpu_level = changed_prefs.cpu_level = 4;
+			currprefs.cpu_model = 68040;
+			
+			currprefs.fpu_model = changed_prefs.fpu_model = FPU_CPU;
+			currprefs.fpu_revision = 0x41;
+			
+			currprefs.cpu_compatible = changed_prefs.cpu_compatible = 0;
+			currprefs.address_space_24 = changed_prefs.address_space_24 = 0;
+			currprefs.cpu_cycle_exact = changed_prefs.cpu_cycle_exact = 0;
+			currprefs.fpu_strict = changed_prefs.fpu_strict = 0;
+			currprefs.mmu_model = changed_prefs.mmu_model = 68040;
+			break;
+		default:
+			fprintf(stderr, "Invalid cpu version\n");
+			return false;
+	}
 
    	write_log("Init680x0() called\n");
 

@@ -146,10 +146,10 @@ static void M68000_InitPairing(void)
 /**
  * One-time CPU initialization.
  */
-void M68000_Init(void)
+void M68000_Init(M68kCpu cpu)
 {
 	/* Init UAE CPU core */
-	Init680x0();
+	Init680x0(cpu);
 
 	/* Init the pairing matrix */
 	M68000_InitPairing();
