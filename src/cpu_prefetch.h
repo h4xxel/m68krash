@@ -13,7 +13,6 @@ STATIC_INLINE uae_u32 get_long_prefetch (int o)
 }
 
 #ifdef CPUEMU_20
-#error CPUEMU_20
 
 STATIC_INLINE void checkcycles_ce020 (void)
 {
@@ -262,9 +261,6 @@ STATIC_INLINE void m68k_do_rts_ce020 (void)
 }
 #endif
 
-#ifdef CPUEMU_21
-#error CPUEMU_21
-
 STATIC_INLINE void checkcycles_ce020 (void)
 {
 	if (regs.ce020memcycles > 0)
@@ -361,15 +357,14 @@ STATIC_INLINE void m68k_do_rts_ce030 (void)
 	m68k_setpc (get_long_ce030 (m68k_areg (regs, 7)));
 	m68k_areg (regs, 7) += 4;
 }
-#endif
 
-#ifdef CPUEMU_12
-#error CPUEMU_12
 
 STATIC_INLINE void ipl_fetch (void)
 {
 	regs.ipl = regs.ipl_pin;
 }
+
+#ifdef CPUEMU_12
 
 STATIC_INLINE uae_u32 mem_access_delay_word_read (uaecptr addr)
 {
