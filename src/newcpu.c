@@ -11,7 +11,7 @@
 
 //#include "main.h"
 //#include "compat.h"
-//#include "sysconfig.h"
+#include "sysconfig.h"
 #include "sysdeps.h"
 #include "hatari-glue.h"
 //#include "options_cpu.h"
@@ -264,6 +264,28 @@ void build_cpufunctbl (void)
 	
 	switch (currprefs.cpu_model)
 	{
+#ifdef CPUEMU_0
+#ifndef CPUEMU_68000_ONLY
+	case 68060:
+		lvl = 5;
+//		tbl = op_smalltbl_0_ff;
+//		if (!currprefs.cachesize) {
+//			if (currprefs.cpu_cycle_exact)
+//				tbl = op_smalltbl_22_ff;
+//			if (currprefs.mmu_model)
+				//tbl = op_smalltbl_33_ff;
+//		}
+		break;
+	case 68040:
+		lvl = 4;
+//		tbl = op_smalltbl_1_ff;
+//		if (!currprefs.cachesize) {
+//			if (currprefs.cpu_cycle_exact)
+//				tbl = op_smalltbl_23_ff;
+//			if (currprefs.mmu_model)
+				tbl = op_smalltbl_31_ff;
+//		}
+		break;
 	case 68030:
 		lvl = 3;
 //		tbl = op_smalltbl_2_ff;
@@ -274,6 +296,20 @@ void build_cpufunctbl (void)
 				tbl = op_smalltbl_32_ff;
 //		}
 		break;
+#if 0
+	case 68020:
+		lvl = 2;
+		tbl = op_smalltbl_3_ff;
+		if (currprefs.cpu_cycle_exact)
+			tbl = op_smalltbl_20_ff;
+		break;
+	case 68010:
+		lvl = 1;
+		tbl = op_smalltbl_4_ff;
+		break;
+#endif
+#endif
+#endif
 	default:
 		changed_prefs.cpu_model = currprefs.cpu_model = 68000;
 	}
@@ -371,14 +407,14 @@ static void update_68k_cycles (void)
 
 static void prefs_changed_cpu (void)
 {
-	/*fixup_cpu (&changed_prefs);
+	fixup_cpu (&changed_prefs);
 	currprefs.cpu_model = changed_prefs.cpu_model;
 	currprefs.fpu_model = changed_prefs.fpu_model;
     currprefs.fpu_revision = changed_prefs.fpu_revision;
 	currprefs.mmu_model = changed_prefs.mmu_model;
 	currprefs.cpu_compatible = changed_prefs.cpu_compatible;
 	currprefs.cpu_cycle_exact = changed_prefs.cpu_cycle_exact;
-	currprefs.blitter_cycle_exact = changed_prefs.cpu_cycle_exact;*/
+	currprefs.blitter_cycle_exact = changed_prefs.cpu_cycle_exact;
 }
 
 void check_prefs_changed_cpu (void)
@@ -2044,15 +2080,6 @@ insretry:
     goto retry;
 }
 
-#ifndef CPUEMU_0
-
-static void m68k_run_2 (void)
-{
-}
-
-#else
-
-
 
 /* Aranym MMU 68040  */
 static void m68k_run_mmu040 (void)
@@ -2078,6 +2105,8 @@ static void m68k_run_mmu040 (void)
 			mmu_opcode = opcode = x_prefetch (0);
 			count_instr (opcode);
 			cpu_cycles = (*cpufunctbl[opcode])(opcode);
+
+			//DSP_Run(cpu_cycles * 4 / CYCLE_UNIT);
 
 			M68000_AddCycles(cpu_cycles * 2 / CYCLE_UNIT);
 
@@ -2328,7 +2357,6 @@ static void m68k_run_mmu (void)
 	}
 }
 
-#endif /* CPUEMU_0 */
 
 int in_m68k_go = 0;
 
@@ -2371,7 +2399,8 @@ void m68k_go (int may_quit)
 
 	set_x_funcs ();
 	if (mmu_enabled && !currprefs.cachesize) {
-			run_func = m68k_run_mmu030;
+			//run_func = m68k_run_mmu030;
+			run_func = m68k_run_mmu;
 		} else { /*
 			run_func = currprefs.cpu_cycle_exact && currprefs.cpu_model == 68000 ? m68k_run_1_ce :
 				currprefs.cpu_compatible && currprefs.cpu_model == 68000 ? m68k_run_1 :
@@ -2379,7 +2408,7 @@ void m68k_go (int may_quit)
 				currprefs.cpu_model >= 68020 && currprefs.cpu_cycle_exact ? m68k_run_2ce :
 				currprefs.cpu_compatible ? m68k_run_2p : m68k_run_2;
 				*/
-			run_func=m68k_run_mmu030;
+			run_func=currprefs.cpu_model == 68040 ? m68k_run_mmu040 : m68k_run_mmu030;
 		}
 		run_func ();
 	}
@@ -2778,7 +2807,8 @@ void exception2 (uaecptr addr, bool read, int size, uae_u32 fc)
 			uae_u32 flags = size == 1 ? MMU030_SSW_SIZE_B : (size == 2 ? MMU030_SSW_SIZE_W : MMU030_SSW_SIZE_L);
 			mmu030_page_fault (addr, read, flags, fc);
 		} else {
-			mmu_bus_error (addr, fc, read == false, size, false, 0);
+			//mmu_bus_error (addr, fc, read == false, size, false, 0);
+			mmu_bus_error (addr, fc, read == false, size, false, 0, true);
 		}
 	} else {
 		// simple version
@@ -2811,13 +2841,13 @@ void cpureset (void)
 	}
 	pc = m68k_getpc ();
 	if (pc >= currprefs.chipmem_size) {
-		//addrbank *b = &get_mem_bank (pc);
-		//if (b->check (pc, 2 + 2)) {
+//		addrbank *b = &get_mem_bank (pc);
+//		if (b->check (pc, 2 + 2)) {
 			/* We have memory, hope for the best.. */
 //			customreset (0);
-			customreset ();
-			return;
-		//}
+//			customreset ();
+//			return;
+//		}
 		write_log ("M68K RESET PC=%x, rebooting..\n", pc);
 //		customreset (0);
 		customreset ();

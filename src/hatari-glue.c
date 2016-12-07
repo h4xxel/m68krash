@@ -74,6 +74,8 @@ int intlev(void)
  */
 int Init680x0(void)
 {
+// * m68krash
+#if 0
 	currprefs.cpu_level = changed_prefs.cpu_level = 3;
 	currprefs.cpu_model = 68030;
 	
@@ -85,6 +87,39 @@ int Init680x0(void)
 	currprefs.cpu_cycle_exact = changed_prefs.cpu_cycle_exact = 0;
 	currprefs.fpu_strict = changed_prefs.fpu_strict = 0;
 	currprefs.mmu_model = changed_prefs.mmu_model = 68030;
+#endif
+// * m68krash
+	
+	currprefs.cpu_level = changed_prefs.cpu_level = ConfigureParams.System.nCpuLevel;
+
+	switch (currprefs.cpu_level) {
+		case 0 : currprefs.cpu_model = 68000; break;
+		case 1 : currprefs.cpu_model = 68010; break;
+		case 2 : currprefs.cpu_model = 68020; break;
+		case 3 : currprefs.cpu_model = 68030; break;
+		case 4 : currprefs.cpu_model = 68040; break;
+		case 5 : currprefs.cpu_model = 68060; break;
+		default: fprintf (stderr, "Init680x0() : Error, cpu_level unknown\n");
+	}
+    
+    currprefs.fpu_model = changed_prefs.fpu_model = ConfigureParams.System.n_FPUType;
+    switch (currprefs.fpu_model) {
+        case 68881: currprefs.fpu_revision = 0x1f; break;
+        case 68882: currprefs.fpu_revision = 0x20; break;
+        case 68040:
+            if (ConfigureParams.System.bTurbo)
+                currprefs.fpu_revision = 0x41;
+            else
+                currprefs.fpu_revision = 0x40;
+            break;
+		default: fprintf (stderr, "Init680x0() : Error, fpu_model unknown\n");
+    }
+	
+	currprefs.cpu_compatible = changed_prefs.cpu_compatible = ConfigureParams.System.bCompatibleCpu;
+	currprefs.address_space_24 = changed_prefs.address_space_24 = ConfigureParams.System.bAddressSpace24;
+	currprefs.cpu_cycle_exact = changed_prefs.cpu_cycle_exact = ConfigureParams.System.bCycleExactCpu;
+	currprefs.fpu_strict = changed_prefs.fpu_strict = ConfigureParams.System.bCompatibleFPU;
+    currprefs.mmu_model = changed_prefs.mmu_model = ConfigureParams.System.bMMU?changed_prefs.cpu_model:0;
 
    	write_log("Init680x0() called\n");
 
