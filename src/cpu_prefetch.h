@@ -359,6 +359,7 @@ STATIC_INLINE void m68k_do_rts_ce030 (void)
 	m68k_areg (regs, 7) += 4;
 }
 
+
 STATIC_INLINE void ipl_fetch (void)
 {
 	regs.ipl = regs.ipl_pin;

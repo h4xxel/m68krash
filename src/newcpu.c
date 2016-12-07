@@ -264,8 +264,6 @@ void build_cpufunctbl (void)
 	
 	switch (currprefs.cpu_model)
 	{
-#ifdef CPUEMU_0
-#ifndef CPUEMU_68000_ONLY
 	case 68060:
 		lvl = 5;
 //		tbl = op_smalltbl_0_ff;
@@ -307,8 +305,6 @@ void build_cpufunctbl (void)
 		lvl = 1;
 		tbl = op_smalltbl_4_ff;
 		break;
-#endif
-#endif
 #endif
 	default:
 		changed_prefs.cpu_model = currprefs.cpu_model = 68000;
@@ -460,7 +456,7 @@ void init_m68k (void)
 {
 	int i;
 
-	prefs_changed_cpu ();
+	//prefs_changed_cpu ();
 	update_68k_cycles ();
 
 	for (i = 0 ; i < 256 ; i++) {
@@ -2081,6 +2077,14 @@ insretry:
     goto retry;
 }
 
+#ifndef CPUEMU_0
+
+static void m68k_run_2 (void)
+{
+}
+
+
+
 
 /* Aranym MMU 68040  */
 static void m68k_run_mmu040 (void)
@@ -2162,13 +2166,15 @@ static void m68k_run_mmu040 (void)
 		TRY (prb) {
 			Exception (save_except);
 		} CATCH (prb) {
-    			Log_Printf(LOG_WARN, "[FATAL] double fault");	
+    			fprintf(stderr, "[FATAL] double fault");	
 			abort();		
 		} ENDTRY
 
 	} ENDTRY
 	}
 }
+
+#else
 
 /* "cycle exact" 68020/030  */
 #define MAX68020CYCLES 4
@@ -2358,6 +2364,7 @@ static void m68k_run_mmu (void)
 	}
 }
 
+#endif /* CPUEMU_0 */
 
 int in_m68k_go = 0;
 
@@ -2399,6 +2406,8 @@ void m68k_go (int may_quit)
 
 
 	set_x_funcs ();
+	
+#if 0
 	if (mmu_enabled && !currprefs.cachesize) {
 			//run_func = m68k_run_mmu030;
 			run_func = m68k_run_mmu;
@@ -2409,8 +2418,11 @@ void m68k_go (int may_quit)
 				currprefs.cpu_model >= 68020 && currprefs.cpu_cycle_exact ? m68k_run_2ce :
 				currprefs.cpu_compatible ? m68k_run_2p : m68k_run_2;
 				*/
+#endif
 			run_func=currprefs.cpu_model == 68040 ? m68k_run_mmu040 : m68k_run_mmu030;
+#if 0
 		}
+#endif
 		run_func ();
 	}
 	in_m68k_go--;
