@@ -953,7 +953,7 @@ kludge_me_do:
 
 void cpu_halt (int e)
 {
-	write_log("HALT!");
+	write_log("HALT! @ 0x%X\n", m68k_getpc());
 	abort();
 }
 
@@ -1947,6 +1947,7 @@ retry:
 			int cnt;
 insretry:
 			pc = regs.instruction_pc = m68k_getpc ();
+			//printf("PC: 0x%X\n", pc);
 			f.cznv = regflags.cznv;
 			f.x = regflags.x;
 

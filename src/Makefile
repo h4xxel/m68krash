@@ -1,4 +1,4 @@
-CFLAGS += -w -g -O0 -std=c99
+CFLAGS += -w -g -O3 -std=c99
 LDFLAGS += -lm
 
 GENCPU = gencpu.o
@@ -25,7 +25,8 @@ all: generated deps
 	@$(AR) -cr cpu.a $(OBJ) $(TABLE68K) $(CPUEMU) 
 
 clean:
-	rm -f $(OBJ) $(BUILD68K) $(GENCPU) $(TABLE68K) $(CPUEMU) table68k.c build68k gencpu cpuemu_31.c cpuemu_32.c cpustbl.c cpustbl.h cpu.a
+	echo " [ RM ] $(OBJ) $(BUILD68K) $(GENCPU) $(TABLE68K) $(CPUEMU) table68k.c build68k gencpu cpuemu_31.c cpuemu_32.c cpustbl.c cpustbl.h cpu.a"
+	@rm -f $(OBJ) $(BUILD68K) $(GENCPU) $(TABLE68K) $(CPUEMU) table68k.c build68k gencpu cpuemu_31.c cpuemu_32.c cpustbl.c cpustbl.h cpu.a
 
 deps: $(CPUEMU) $(TABLE68K) $(OBJ)
 
@@ -53,7 +54,7 @@ cpuemu_32.o: generated
 	@echo " [ CC ]	$*.c"
 	@$(CC) $(CFLAGS) -c -o $@ $*.c
 
-cpustbl.o:  generated
+cpustbl.o: generated
 	@echo " [ CC ]	$*.c"
 	@$(CC) $(CFLAGS) -c -o $@ $*.c
 	

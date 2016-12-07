@@ -42,6 +42,10 @@
 #endif
 #define CPUEMU_32 /* 68030 with MMU */
 
+#define MMU030_OP_DBG_MSG 0
+#define MMU030_ATC_DBG_MSG 0
+#define MMU030_REG_DBG_MSG 0
+
 #else
 
 /* #define SINGLEFILE */

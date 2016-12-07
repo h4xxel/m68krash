@@ -37,10 +37,6 @@
 #include "cpummu030.h"
 #include "hatari-glue.h"
 
-#define MMU030_OP_DBG_MSG 0
-#define MMU030_ATC_DBG_MSG 0
-#define MMU030_REG_DBG_MSG 0
-
 #define TT_FC_MASK      0x00000007
 #define TT_FC_BASE      0x00000070
 #define TT_RWM          0x00000100
@@ -187,6 +183,7 @@ void mmu_op30_pmove (uaecptr pc, uae_u32 opcode, uae_u16 next, uaecptr extra)
         case 0x10:
             write_log(_T("PMOVE: %s TC %08X\n"), rw?"read":"write",
                       rw?tc_030:x_get_long(extra));
+            write_log("addr is 0x%p\n", extra);
             break;
         case 0x12:
             write_log(_T("PMOVE: %s SRP %08X%08X\n"), rw?"read":"write",
