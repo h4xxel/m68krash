@@ -2899,6 +2899,8 @@ void m68k_resumestopped (void)
 	unset_special (SPCFLAG_STOP);
 }
 
+#if 1
+
 STATIC_INLINE void fill_cache040 (uae_u32 addr)
 {
 	int index, i, lws;
@@ -3206,6 +3208,7 @@ uae_u32 get_word_ce030_prefetch (int o)
 	}
 }
 
+#endif
 
 void flush_dcache (uaecptr addr, int size)
 {

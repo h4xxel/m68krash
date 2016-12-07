@@ -22,7 +22,7 @@ const char HatariGlue_fileid[] = "Hatari hatari-glue.c : " __DATE__ " " __TIME__
 #include "memory.h"
 #include "newcpu.h"
 #include "hatari-glue.h"
-#include "m68000.h"
+#include "m68krash.h"
 
 
 struct uae_prefs currprefs, changed_prefs;
