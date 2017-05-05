@@ -2084,7 +2084,7 @@ static void m68k_run_2 (void)
 }
 
 
-
+void disasm_print_opcode(uae_u32 opcode);
 
 /* Aranym MMU 68040  */
 static void m68k_run_mmu040 (void)
@@ -2103,11 +2103,19 @@ static void m68k_run_mmu040 (void)
 			f.x = regflags.x;
 			mmu_restart = true;
 			pc = regs.instruction_pc = m68k_getpc ();
-
+			
 			do_cycles (cpu_cycles);
 
 			mmu_opcode = -1;
 			mmu_opcode = opcode = x_prefetch (0);
+			
+			
+			#ifdef DEBUG_TRACE
+			printf(":0x%X ", pc);
+			disasm_print_opcode(opcode);
+			printf(" [%X]\n", opcode);
+			#endif
+			
 			count_instr (opcode);
 			cpu_cycles = (*cpufunctbl[opcode])(opcode);
 
@@ -2622,6 +2630,35 @@ void m68k_disasm (FILE *f, uaecptr addr, uaecptr *nextpc, int cnt)
 	m68k_disasm_2 (f, addr, nextpc, cnt, NULL, NULL, 0);
 }
 
+void disasm_print_opcode(uae_u32 opcode) {
+	TCHAR *ccpt;
+	struct mnemolookup *lookup;
+	struct instr *dp;
+	TCHAR instrname[32] = {0};
+
+	if (cpufunctbl[opcode] == op_illg_1) {
+		opcode = 0x4AFC;
+	}
+	dp = table68k + opcode;
+	for (lookup = lookuptab;lookup->mnemo != dp->mnemo; lookup++);
+
+	m68kpc_offset += 2;
+
+	_tcscpy (instrname, lookup->name);
+	ccpt = _tcsstr (instrname, "cc");
+	if (ccpt != 0) {
+		_tcsncpy (ccpt, ccnames[dp->cc], 2);
+	}
+	switch (dp->size){
+	case sz_byte: _tcscat (instrname, ".B "); break;
+	case sz_word: _tcscat (instrname, ".W "); break;
+	case sz_long: _tcscat (instrname, ".L "); break;
+	default: _tcscat (instrname, "   "); break;
+	}
+	
+	printf("%s", instrname);
+}
+
 /*************************************************************
 Disasm the m68kcode at the given address into instrname
 and instrcode
@@ -2639,7 +2676,7 @@ void sm68k_disasm (TCHAR *instrname, TCHAR *instrcode, uaecptr addr, uaecptr *ne
 	m68kpc_offset = addr - m68k_getpc ();
 
 	oldpc = m68kpc_offset;
-	opcode = get_iword_1 (m68kpc_offset);
+	opcode = x_get_iword (m68kpc_offset);
 	if (cpufunctbl[opcode] == op_illg_1) {
 		opcode = 0x4AFC;
 	}
@@ -2676,7 +2713,7 @@ void sm68k_disasm (TCHAR *instrname, TCHAR *instrcode, uaecptr addr, uaecptr *ne
 		int i;
 		for (i = 0; i < (m68kpc_offset - oldpc) / 2; i++)
 		{
-			_stprintf (instrcode, "%04x ", get_iword_1 (oldpc + i * 2));
+			_stprintf (instrcode, "%04x ", x_get_iword (oldpc + i * 2));
 			instrcode += _tcslen (instrcode);
 		}
 	}
