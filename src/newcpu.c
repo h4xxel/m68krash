@@ -1751,8 +1751,14 @@ static bool do_specialties_interrupt (int Pending)
 }
 
 STATIC_INLINE int do_specialties (int cycles)
+
 {
     
+	if (regs.spcflags & SPCFLAG_MODE_SINGLESTEP) {
+		regs.spcflags |= SPCFLAG_BRK;
+		regs.spcflags &= (~SPCFLAG_MODE_SINGLESTEP);
+	}
+	
 	if(regs.spcflags & SPCFLAG_EXTRA_CYCLES) {
 		/* Add some extra cycles to simulate a wait state */
 		unset_special(SPCFLAG_EXTRA_CYCLES);
@@ -2095,8 +2101,9 @@ static void m68k_run_mmu040 (void)
 	m68k_exception save_except;
     int intr = 0;
     int lastintr = 0;
+    	int end_loop = 0;
 	
-	for (;;) {
+	for (;!end_loop;) {
 	TRY (prb) {
 		for (;;) {
 			f.cznv = regflags.cznv;
@@ -2145,7 +2152,8 @@ static void m68k_run_mmu040 (void)
             
 			if (regs.spcflags) {
 				if (do_specialties (cpu_cycles* 2 / CYCLE_UNIT))
-					return;
+					end_loop = 1;
+					break;
 			}
 		} // end of for(;;)
 	} CATCH (prb) {

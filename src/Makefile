@@ -1,5 +1,5 @@
-CFLAGS += -w -g -O3 -std=c99
-LDFLAGS += -lm
+CFLAGS += -w -g -O3 -std=c99 -fcommon
+LDFLAGS += -lm -fcommon
 
 GENCPU = gencpu.o
 BUILD68K = build68k.o
