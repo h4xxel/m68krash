@@ -1,4 +1,4 @@
-CFLAGS += -w -g -O3 -std=c99 -fcommon
+CFLAGS += -w -g -O3 -std=c99 -fcommon -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types
 LDFLAGS += -lm -fcommon
 
 GENCPU = gencpu.o
